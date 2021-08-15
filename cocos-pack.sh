@@ -9,6 +9,7 @@ mkdir ./hot-update
 # 拷贝
 cp -a ./package.json ./hot-update
 cp -a ./dist ./hot-update
+cp -a ./images ./hot-update
 cp -a ./README.md ./hot-update
 cp -a ./i18n ./hot-update
 # 压缩

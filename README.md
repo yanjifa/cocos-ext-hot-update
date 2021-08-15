@@ -4,7 +4,7 @@
 - 构建后在项目目录下自动生成热更新文件, 目录结构如下：
 ```
 .
-├── hotupdate-assets                // 热更新文件根目录
+├── hotupdate-assets                // 热更新文件根目录, 插件创建
 │   └── mac                         // 对应构建平台, 上传 CDN 需从此目录开始上传
 │       ├── 1.0.0.1                 // 版本号 + buildNum
 │       │   ├── assets
@@ -21,7 +21,7 @@
 ├── package.json
 └── tsconfig.json
 ```
-- main.js 脚本注入热更相关代码，具体逻辑为参考官方热更文档
+- main.js 脚本注入热更相关代码，添加搜索路径, 主要逻辑参考官方热更 Demo
 ```js
 `// inject by extensions ${PACKAGE_NAME} ---- start ----
 jsb.fileUtils.addSearchPath(jsb.fileUtils.getWritablePath() + "${packageOptions.storagePath}", true);
@@ -46,11 +46,16 @@ if (jsb.fileUtils.isDirectoryExist(tempPath) && !jsb.fileUtils.isFileExist(tempP
     })
     jsb.fileUtils.removeDirectory(tempPath);
 }
-// inject by extensions ${PACKAGE_NAME} ---- end ----`
+// inject by extensions ${PACKAGE_NAME} ---- end ----
+`
 ```
 - 项目设置中配置是否开启热更功能 (默认关闭)
 ![projet_setting](images/project_setting.png)
 ## 使用教程
+- 使用 Demo, 基于官方项目修改而来
+
+    [https://github.com/yanjifa/tutorial-hot-update](https://github.com/yanjifa/tutorial-hot-update)
+
 - 构建 packages 配置, 建议选在 [项目->构建发布->对应平台设置好之后提交]
 ![builder_setting](images/builder_setting.png)
 
@@ -69,8 +74,6 @@ if (jsb.fileUtils.isDirectoryExist(tempPath) && !jsb.fileUtils.isFileExist(tempP
         }
     }
     ```
-- 使用方式
-    [Demo](https://)
 
 - 命令行构建:
     ```shell
