@@ -1,0 +1,38 @@
+{
+    "name": "hot-update",
+    "title": "i18n:hot-update.title",
+    "package_version": 2,
+    "version": "1.0.0",
+    "author": "yanjifa",
+    "scripts": {
+        "cocos-install": "./cocos-install.sh",
+        "cocos-pack": "./cocos-pack.sh"
+    },
+    "description": "i18n:hot-update.description",
+    "main": "./dist/browser.js",
+    "contributions": {
+        "builder": "./dist/builder.js",
+        "profile": {
+            "project": {
+                "hotupdate-enable": {
+                    "default": false,
+                    "label": "i18n:hot-update.profile.hotupdate_enable"
+                }
+            }
+        },
+        "project": {
+            "properties": {
+                "label": "i18n:hot-update.profile.title",
+                "content": {
+                    "hotupdate-enable": {
+                        "ui": "ui-checkbox"
+                    }
+                }
+            }
+        }
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^5.0.4",
+        "@types/node": "^14.5.2"
+    }
+}

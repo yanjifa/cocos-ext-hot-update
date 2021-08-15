@@ -1,0 +1,6 @@
+.vscode/
+dist/
+node_modules/
+.DS_Store
+ehthumbs.db
+Thumbs.db

@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "strict": true,
+        "module": "commonjs",
+        "inlineSourceMap": false,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "lib": ["dom", "es7"],
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+    },
+    "exclude": ["./dist"],
+    "include": ["./src"]
+  }
