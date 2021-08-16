@@ -148,7 +148,10 @@ function generateManifest(options: IBuildTaskOption) {
         return;
     }
     const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
-    const remoteUrl = packageOptions.remoteAddress;
+    let remoteUrl = packageOptions.remoteAddress;
+    if (remoteUrl.endsWith('/')) {
+        remoteUrl = remoteUrl.slice(0, -1);
+    }
     // build num | from 1 to max
     const buildNum = !isNaN(Number(packageOptions.buildNum)) ? Number(packageOptions.buildNum) : 1;
     const hotupdateVersion = `${packageOptions.version.trim()}.${buildNum.toFixed()}`;
@@ -165,13 +168,13 @@ function generateManifest(options: IBuildTaskOption) {
     // 构建后默认资源目录
     const assetsPaths = ['src', 'assets', 'jsb-adapter'];
     // 初始化 manifest
-    const packageUrl = path.join(remoteUrl, options.platform, hotupdateVersion);
+    const packageUrl = `${remoteUrl}/${options.platform}/${hotupdateVersion}`;
     const manifest: IManifest = {
         packageUrl: encodeURI(packageUrl),
         version: hotupdateVersion,
         searchPaths: [packageOptions.storagePath],
-        remoteManifestUrl: encodeURI(path.join(remoteUrl, options.platform, projectManifestName)),
-        remoteVersionUrl: encodeURI(path.join(remoteUrl, options.platform, versionManifestName)),
+        remoteManifestUrl: encodeURI(`${remoteUrl}/${options.platform}/${projectManifestName}`),
+        remoteVersionUrl: encodeURI(`${remoteUrl}/${options.platform}/${versionManifestName}`),
         assets: {},
     };
     // 获取目录内所有文件
@@ -197,13 +200,32 @@ function generateManifest(options: IBuildTaskOption) {
         return fileList;
     };
     // 创建目录
-    const mkdirSync = (path: string) => {
+    const mkdirSync = (dirName: string) => {
         try {
-            fs.mkdirSync(path);
+            fs.mkdirSync(dirName);
         } catch (e) {
             if (e.code !== 'EEXIST') throw e;
         }
     };
+    // 递归删除目录及文件
+    const deleteDirSync = (dirName: string) => {
+        let files = [];
+        if (fs.existsSync(dirName)) {
+            // 返回文件和子目录的数组
+            files = fs.readdirSync(dirName);
+            files.forEach((file) => {
+                const curPath = path.join(dirName, file);
+                // fs.statSync同步读取文件夹文件，如果是文件夹，在重复触发函数
+                if (fs.statSync(curPath).isDirectory()) {
+                    deleteDirSync(curPath);
+                } else {
+                    fs.unlinkSync(curPath);
+                }
+            });
+            // 清除文件夹
+            fs.rmdirSync(dirName);
+        }
+    }
     // Iterate assets and src folder
     const assetsList: IFileStat[] = [];
     assetsPaths.forEach((o) => {
@@ -234,6 +256,8 @@ function generateManifest(options: IBuildTaskOption) {
     mkdirSync(manifestPath);
     hotupdateAssetsPath = path.join(manifestPath, hotupdateVersion);
     mkdirSync(hotupdateAssetsPath);
+    // 如果目录不为空, 先清除
+    deleteDirSync(hotupdateAssetsPath);
     // 保存 project.manifest 到磁盘
     fs.writeFileSync(destManifestPath, JSON.stringify(manifest));
     destManifestPath = path.join(manifestPath, projectManifestName);
