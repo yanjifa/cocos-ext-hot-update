@@ -9,7 +9,7 @@ export function unload() {
     // log("builder unload!");
 }
 
-const buildPLugin: IBuildPlugin = {
+const buildPlugin: IBuildPlugin = {
     hooks: './hooks',
     options: {
         remoteAddress: {
@@ -34,7 +34,7 @@ const buildPLugin: IBuildPlugin = {
                     placeholder: 'i18n:hot-update.builder.hotupdate_storage_desc',
                 },
             },
-            verifyRules: ['isValidVersion'],
+            verifyRules: ['isValidStorage'],
         },
         version: {
             label: 'i18n:hot-update.builder.hotupdate_version',
@@ -86,8 +86,8 @@ const buildPLugin: IBuildPlugin = {
 };
 
 export const configs: Record<string, IBuildPlugin> = {
-    'ios': buildPLugin,
-    'mac': buildPLugin,
-    'android': buildPLugin,
-    'windows': buildPLugin,
+    'ios': buildPlugin,
+    'mac': buildPlugin,
+    'android': buildPlugin,
+    'windows': buildPlugin,
 };
