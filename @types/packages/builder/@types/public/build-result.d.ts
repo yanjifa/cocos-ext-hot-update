@@ -22,6 +22,7 @@ import { ISplashSetting, ICustomJointTextureLayout, UUID } from "./options";
 // scenes: [{url: "db://assets/New Scene-001.scene", uuid: "69dc4a42-cc6c-49fb-9a57-7de0c212f83d"},…]
 // startScene: "current_scene"
 export interface ISettings {
+    CocosEngine: string;
     debug: boolean;
     designResolution: ISettingsDesignResolution;
     jsList: string[];
@@ -183,4 +184,5 @@ export interface IBundleConfig {
     encrypted?: boolean; // 原生上使用，标记该 bundle 中的脚本是否加密
     isZip?: boolean; // 是否是 zip 模式
     zipVersion?: string;
+    extensionMap: Record<string, UUID[]>
 }

@@ -1,6 +1,6 @@
 import { BundleCompressionType, IAssetPathInfo, IBuildPaths, IBuildTaskOption, IBundleConfig, IJsonPathInfo, ISettings, UUID } from "../public";
 import { IAssetInfo } from "./asset-manager";
-import { ImportMap } from "./import-map";
+import { ImportMapWithImports } from "./import-map";
 
 export class InternalBuildResult {
     settings: ISettings;
@@ -15,7 +15,7 @@ export class InternalBuildResult {
     // 纹理压缩任务
     imageTaskMap: Record<UUID, IImageTask>;
     compressImageResult: ICompressImageResult;
-    importMap: ImportMap;
+    importMap: ImportMapWithImports;
     // 传入构建的 options
     rawOptions: IBuildTaskOption;
     // 输出路径集合
@@ -23,6 +23,7 @@ export class InternalBuildResult {
     // 允许自定义编译选项
     compileOptions?: any;
     addBundle: (bundle: IBundle) => void;
+    addPlugin: (plugin: IAssetInfo) => void;
 }
 
 export interface IImageTask {
@@ -74,6 +75,7 @@ export class IBundle {
     deps: Set<string>; // bundle 的依赖 bundle
     groups: IGroup[]; // 该 bundle 中的资源分组
     cache: any;
+    configOutPutName: string;
     config: IBundleConfig; // 该 bundle 的资源清单
     readonly isZip: boolean; // 该 bundle 是否是 zip 模式
     zipVer: string; // Zip 压缩模式，压缩包的版本

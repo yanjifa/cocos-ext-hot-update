@@ -107,6 +107,7 @@ export interface PanelInfo {
     methods?: { [name: string]: Function };
     ready?: Function;
     close?: Function;
+    update?: (options: IBuildTaskOption, path: string, value: any) => void | Promise<void>;
 }
 
 export interface IPanelThis {

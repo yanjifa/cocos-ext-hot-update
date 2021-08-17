@@ -1,11 +1,8 @@
 module.exports = {
     description: '为构建原生平台项目, 生成热更新数据',
     title: '热更新',
-    profile: {
-        title: '热更新设置',
-        hotupdate_enable: '生成热更新数据',
-    },
     builder: {
+        hotupdate_enable: '生成热更新数据',
         remote_address: '资源服务地址',
         build_num: 'Build Num',
         build_num_desc: 'CI/CD 工具提供, 比如 Jenkins',

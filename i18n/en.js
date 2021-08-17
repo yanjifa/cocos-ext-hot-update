@@ -1,11 +1,8 @@
 module.exports = {
     description: 'Generate HotUpdate Files For Native Build',
     title: 'HotUpdate',
-    profile: {
-        title: 'HotUpdate Setting',
-        hotupdate_enable: 'Generate HotUpdate Files',
-    },
     builder: {
+        hotupdate_enable: 'Generate HotUpdate Files',
         remote_address: 'Remote Address',
         build_num: 'Build Num',
         build_num_desc: 'From CI/CD tool, Like Jenkins',

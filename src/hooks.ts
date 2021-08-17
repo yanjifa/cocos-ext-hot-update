@@ -2,8 +2,7 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { IBuildResult, IBuildTaskOption } from '../@types';
-import { PACKAGE_NAME, log } from './browser';
-import child_process from 'child_process';
+import { log, PACKAGE_NAME } from './browser';
 
 interface IFileStat {
     filePath: string;
@@ -26,13 +25,12 @@ interface IManifest {
     searchPaths?: string[],
 }
 interface IPluginOptions {
+    hotUpdateEnable: boolean;
     remoteAddress: string;
     storagePath: string;
     version: string;
     buildNum: number;
 }
-
-let hotUpdateEnable: boolean = false;
 
 export async function load() {
     // log('Load in builder.');
@@ -44,8 +42,7 @@ export function unload() {
 }
 
 export async function onBeforeBuild(options: IBuildTaskOption) {
-    hotUpdateEnable = await Editor.Profile.getProject(PACKAGE_NAME, 'hotupdate-enable');
-    log('hotupdate enable: ', hotUpdateEnable);
+    //
 }
 
 export async function onBeforeBuildAssets(options: IBuildTaskOption, result: IBuildResult) {
@@ -82,10 +79,10 @@ export async function onAfterMake(options: IBuildTaskOption, result: IBuildResul
  * @param options
  */
 function injectMainScript(options: IBuildTaskOption) {
-    if (!hotUpdateEnable) {
+    const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
+    if (!packageOptions.hotUpdateEnable) {
         return;
     }
-    const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
     const projectPath = Editor.Project.path;
     const buildPath = `${options.buildPath.replace('project:/', projectPath)}/${options.outputName}`;
     const mainScriptPath = path.resolve(`${buildPath}/assets/main.js`);
@@ -127,7 +124,8 @@ if (jsb.fileUtils.isDirectoryExist(tempPath) && !jsb.fileUtils.isFileExist(tempP
  * @param options
  */
 function generateEmptManifest(options: IBuildTaskOption) {
-    if (!hotUpdateEnable) {
+    const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
+    if (!packageOptions.hotUpdateEnable) {
         return;
     }
     const projectPath = Editor.Project.path;
@@ -144,10 +142,10 @@ function generateEmptManifest(options: IBuildTaskOption) {
  * @param options
  */
 function generateManifest(options: IBuildTaskOption) {
-    if (!hotUpdateEnable) {
+    const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
+    if (!packageOptions.hotUpdateEnable) {
         return;
     }
-    const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
     let remoteUrl = packageOptions.remoteAddress;
     if (remoteUrl.endsWith('/')) {
         remoteUrl = remoteUrl.slice(0, -1);
@@ -274,13 +272,10 @@ function generateManifest(options: IBuildTaskOption) {
     // 拷贝构建后的热更资源
     assetsPaths.push(projectManifestName);
     assetsPaths.forEach((assetPath) => {
+        const destPath = path.join(hotupdateAssetsPath, assetPath);
         assetPath = path.join(assetsRootPath, assetPath);
-        if (process.platform === 'win32') {
-            child_process.execSync(`copy ${assetPath} ${hotupdateAssetsPath}`);
-        } else {
-            // darwin | linux
-            child_process.execSync(`cp -a ${assetPath} ${hotupdateAssetsPath}`);
-        }
+        // 拷贝
+        Build.Utils.copyDirSync(assetPath, destPath);
     });
     log('copy assets success');
 }

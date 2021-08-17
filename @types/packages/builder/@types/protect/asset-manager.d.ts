@@ -2,6 +2,7 @@ import { AssetInfo } from "../../../asset-db/@types/public";
 import { UUID } from "../public";
 import { IInternalBuildOptions } from "./options";
 export interface IBuildStatiscInfo {
+    packageName: string;
     gameName: string;
     platform: string;
     scenesNum: number;
@@ -55,6 +56,9 @@ export interface IAssetInfo extends AssetInfo {
     // fatherUuid?: string | undefined;
     userData?: any;
     subAssets: Record<string, IAssetInfo>;
+    dirty?: boolean;
+    // 内置资源没有 mtime
+    mtime?: number;
 }
 export type IUrl = string; // 需要的是符合 url 标准的字符串，例如 asset/script/text.ts
 export type IAssetInfoMap = Record<UUID, IAssetInfo>;

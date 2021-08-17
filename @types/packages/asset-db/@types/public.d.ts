@@ -55,6 +55,7 @@ export interface QueryAssetsOption {
     type?: string;
     pattern?: string;
     ccType?: string;
+    isBundle?: boolean;
 }
 
 export interface AssetOperationOption {

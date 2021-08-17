@@ -1,4 +1,3 @@
-import { SpawnOptionsWithoutStdio } from 'child_process';
 import { IBuild, IBuildUtils, ITaskState } from '../public';
 import { InternalBuildResult } from './build-result';
 
@@ -42,6 +41,14 @@ export interface IInternalBuildUtils extends IBuildUtils {
      * @param options 
      */
     quickSpawn(command: string, cmdParams: string[], options?: IQuickSpawnOption): Promise<number | boolean>;
+
+    /**
+     * 将某个 hash 值添加到某个路径上
+     * @param targetPath 
+     * @param hash 
+     * @returns 
+     */
+    patchMd5ToPath(targetPath: string, hash: string): string;
 }
 
 export interface IInternalBuild extends IBuild {
@@ -69,6 +76,8 @@ export interface IScriptInfo {
 type ICheckRule = 'pathExist' | 'valid' | 'required' | 'normalName' | 'noChinese' | 'array' | 'string' | 'number' | 'http';
 
 export interface IBuildPanel {
+    // 内部使用的 Vue
+    Vue: any;
     // 内置 vue 组件
     vueComps: {
         buildProp: any;

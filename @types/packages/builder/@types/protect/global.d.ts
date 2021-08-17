@@ -1,5 +1,4 @@
 import { IBuildPanel, IInternalBuild } from ".";
-import { IBuildWorker } from "../private/builder";
 
 // 定义 builder 进程内的全局变量
 declare global {

@@ -1,3 +1,4 @@
+import { IBuildTimeConstantValue } from "@cocos/build-engine/dist/build-time-constants";
 import { IBuildDesignResolution, IBuildTaskOption } from "../public";
 
 export interface ScriptAssetuserData {
@@ -26,6 +27,8 @@ export interface IBuildScriptParam {
     system?: {
         preset?: 'web' | 'commonjs-like',
     },
+
+    flags: Record<string, IBuildTimeConstantValue>,
 }
 
 export interface IPolyFills {
@@ -65,17 +68,22 @@ export interface IInternalBuildOptions extends IBuildTaskOption {
     // 编译脚本配置选项
     buildScriptParam: IBuildScriptParam;
     // 序列化打包资源时的特殊处理
-    assetSerializeOptions?: {
+    assetSerializeOptions: {
         'cc.EffectAsset': {
             glsl1: boolean;
             glsl3: boolean;
             glsl4: boolean;
         };
+        // 是否输出 ccon 格式
+        exportCCON?: boolean;
+
+        allowCCONExtension?: boolean;
     };
     updateOnly: boolean;
     nextTasks?: string[];
     generateCompileConfig?: boolean;
     recompileConfig?: IRecompileConfig;
+    logDest?: string; // log 输出地址
 
     // 项目设置
     includeModules: string[];
@@ -100,7 +108,7 @@ export interface appTemplateData {
     };
     hasPhysicsAmmo: boolean;
     md5Cache: boolean;
-    server: string;
+    server: string; // 服务器地址
 
     cocosTemplate?: string; // 注入的子模板路径
 }

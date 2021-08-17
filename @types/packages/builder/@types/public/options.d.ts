@@ -94,6 +94,7 @@ export type Platform =
     | 'ios'
     // | 'ios-app-clip'
     | 'android'
+    | 'ohos'
     | 'windows'
     | 'xiaomi-quick-game'
     | 'baidu-mini-game'

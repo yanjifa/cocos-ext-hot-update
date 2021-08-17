@@ -166,7 +166,14 @@ export interface ExecuteSceneScriptMethodOptions {
     args: any[];
 }
 
-type IPropertyValueType = IProperty | IProperty[] | null | undefined | number | boolean | string;
+type IPropertyValueType = IProperty | IProperty[] | null | undefined | number | boolean | string | Vec3 | Vec2;
+
+export interface IPropertyGroupOptions {
+    id: string // 默认 'default'
+    name: string,
+    displayOrder: number, // 默认 Infinity, 排在最后面
+    style: string // 默认为 'tab'
+}
 
 export interface IProperty {
     value: { [key: string]: IPropertyValueType } | IPropertyValueType;
@@ -190,6 +197,7 @@ export interface IProperty {
     extends?: string[]; // 继承链
     displayName?: string; // 显示到界面上的名字
     displayOrder?: number; // 显示排序
+    group?: IPropertyGroupOptions; // tab
     tooltip?: string; // 提示文本
     editor?: any; // 组件上定义的编辑器数据
     animatable?: boolean; // 是否可以在动画中编辑
@@ -242,6 +250,7 @@ export interface INode {
     __prefab__?: any;
     _prefabInstance?: any;
     removedComponents?: IRemovedComponentInfo[];
+    mountedRoot?: string;
 }
 
 export interface IComponent extends IProperty {
@@ -250,7 +259,7 @@ export interface IComponent extends IProperty {
         uuid: IPropertyValueType;
         name: IPropertyValueType;
     } & Record<string, IPropertyValueType>;
-    isMounted: boolean;
+    mountedRoot?: string;
 }
 
 export interface IScene {
@@ -310,8 +319,14 @@ export interface ScenePluginComponentInfo {
 export interface IKeyDumpData {
     frame: number;
     dump: any; // value的dump数据
-    curve: any;
+    inTangent?: number;
+    inTangentWeight?: number;
+    outTangent?: number;
+    outTangentWeight?: number;
+    interpMode?: number;
+    tangentWeightMode?: number;
     imgUrl?: string;
+    easingMethod?: number;
 }
 
 export interface IDumpType {
@@ -325,6 +340,8 @@ export interface IPropCurveDumpData {
     displayName: string;
     key: string;
     type?: IDumpType;
+    preExtrap: number;
+    postExtrap: number;
 }
 
 export interface IAnimCopyKeySrcInfo {

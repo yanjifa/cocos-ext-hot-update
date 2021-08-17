@@ -55,4 +55,14 @@ export interface message extends EditorMessageMap {
         ],
         result: any,
     },
+    'execute-scene-script': {
+        params: [] | [
+            {
+                name: string;
+                method: string;
+                args: any[];
+            }
+        ],
+        result: any,
+    },
 }

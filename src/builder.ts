@@ -12,6 +12,14 @@ export function unload() {
 const buildPlugin: IBuildPlugin = {
     hooks: './hooks',
     options: {
+        hotUpdateEnable: {
+            label: 'i18n:hot-update.builder.hotupdate_enable',
+            default: false,
+            render: {
+                ui: 'ui-checkbox'
+            },
+            verifyRules: [],
+        },
         remoteAddress: {
             label: 'i18n:hot-update.builder.remote_address',
             description: 'i18n:hot-update.builder.remote_address',
