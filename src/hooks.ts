@@ -87,6 +87,7 @@ function injectMainScript(options: IBuildTaskOption) {
     const buildPath = `${options.buildPath.replace('project:/', projectPath)}/${options.outputName}`;
     const mainScriptPath = path.resolve(`${buildPath}/assets/main.js`);
     let mainScript = fs.readFileSync(mainScriptPath).toString('utf-8');
+
     mainScript =
 `// inject by extensions ${PACKAGE_NAME} ---- start ----
 jsb.fileUtils.addSearchPath(jsb.fileUtils.getWritablePath() + "${packageOptions.storagePath}", true);
@@ -112,6 +113,7 @@ if (jsb.fileUtils.isDirectoryExist(tempPath) && !jsb.fileUtils.isFileExist(tempP
     jsb.fileUtils.removeDirectory(tempPath);
 }
 // inject by extensions ${PACKAGE_NAME} ---- end ----` + mainScript;
+
     fs.writeFileSync(mainScriptPath, mainScript);
     log('inject main script success');
 }
