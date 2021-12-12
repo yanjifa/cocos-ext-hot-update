@@ -33,13 +33,18 @@ export interface IBuildTaskOption {
     renderPipeline?: string;
     designResolution?: IBuildDesignResolution;
     physicsConfig?: any;
+    flags?: Record<string, boolean>;
+
 
     // 是否使用自定义插屏选项
     replaceSplashScreen?: boolean;
     splashScreen: ISplashSetting;
 
     packages?: Record<string, any>;
+    id?: string; // 手动配置构建任务 id
     // recompileConfig?: IRecompileConfig;
+
+    customLayers: {name: string, value: number}[];
 }
 
 export type UUID = string;

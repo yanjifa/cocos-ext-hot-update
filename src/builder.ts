@@ -1,15 +1,15 @@
 
-import { IBuildPlugin } from '../@types';
+import { BuildPlugin, IBuildPluginConfig } from '../@types';
 
-export function load() {
+export const load: BuildPlugin.load = function () {
     // log("builder loaded!");
 }
 
-export function unload() {
+export const unload: BuildPlugin.Unload = function() {
     // log("builder unload!");
 }
 
-const buildPlugin: IBuildPlugin = {
+const buildPlugin: IBuildPluginConfig = {
     hooks: './hooks',
     options: {
         hotUpdateEnable: {
@@ -93,9 +93,11 @@ const buildPlugin: IBuildPlugin = {
     },
 };
 
-export const configs: Record<string, IBuildPlugin> = {
+export const configs: BuildPlugin.Configs = {
     'ios': buildPlugin,
     'mac': buildPlugin,
     'android': buildPlugin,
     'windows': buildPlugin,
 };
+
+export const assetHandlers: BuildPlugin.AssetHandlers = './asset-handlers';

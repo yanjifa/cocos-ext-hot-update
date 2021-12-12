@@ -85,11 +85,12 @@ export interface IInternalBuildOptions extends IBuildTaskOption {
     recompileConfig?: IRecompileConfig;
     logDest?: string; // log 输出地址
 
-    // 项目设置
+    // 项目设置，重复定义为必选参数
     includeModules: string[];
     renderPipeline: string;
     designResolution: IBuildDesignResolution;
     physicsConfig: any;
+    flags: Record<string, boolean>;
 }
 
 
@@ -99,14 +100,13 @@ export interface appTemplateData {
     // ImportMapSupported: boolean;
     // NonconformingCommonJs: boolean;
     showFPS: boolean;
-    isSetOrientation: boolean;
     importMapFile?: string;
     resolution: {
         policy: number;
         width: number;
         height: number;
     };
-    hasPhysicsAmmo: boolean;
+    // hasPhysicsAmmo: boolean;
     md5Cache: boolean;
     server: string; // 服务器地址
 

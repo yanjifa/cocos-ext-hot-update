@@ -2,7 +2,6 @@ import { IBuild, IBuildUtils, ITaskState } from '../public';
 import { InternalBuildResult } from './build-result';
 
 export * from './asset-manager';
-export * from './texture-compress';
 export * from './import-map';
 export * from './options';
 export * from './build-result';

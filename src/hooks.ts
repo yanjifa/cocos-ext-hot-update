@@ -203,7 +203,7 @@ function generateManifest(options: IBuildTaskOption) {
     const mkdirSync = (dirName: string) => {
         try {
             fs.mkdirSync(dirName);
-        } catch (e) {
+        } catch (e: any) {
             if (e.code !== 'EEXIST') throw e;
         }
     };

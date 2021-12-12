@@ -1,10 +1,19 @@
 // ********************************* plugin ****************************************
 
-import { BundleCompressionType, IBuildPlugin, IBuildTaskOption, IDisplayOptions, ISettings, IVerificationRuleMap } from '../public';
+import { BundleCompressionType, IBuildPluginConfig, IBuildTaskOption, IDisplayOptions, ISettings, IVerificationRuleMap } from '../public';
 import { BuilderAssetCache } from './asset-manager';
 import { InternalBuildResult } from './build-result';
 import { IInternalBuildOptions } from './options';
-import { ITextureCompressPlatform, ITextureCompressType } from './texture-compress';
+import { ITextureCompressPlatform, ITextureCompressType } from '../public/texture-compress';
+
+export interface IBuildWorkerPluginInfo {
+    assetHandlers?: string;
+    // 注册到各个平台的钩子函数
+    hooks?: Record<string, string>;
+    pkgName: string;
+    internal: boolean; // 是否为内置插件
+    priority: number; // 优先级
+}
 
 export type IPluginHookName =
     | 'onBeforeBuild'
@@ -21,19 +30,19 @@ export type IPluginHookName =
 // | 'onAfterCompile'
 // | 'run';
 
-export type IPluginHook = Record<IPluginHookName, IBaseHooks>;
-export interface IHook {
+export type IPluginHook = Record<IPluginHookName, IInternalBaseHooks>;
+export interface IInternalHook {
     throwError?: boolean; // 插件注入的钩子函数，在执行失败时是否直接退出构建流程
     title?: string; // 插件任务整体 title，支持 i18n 写法
     // ------------------ 钩子函数 --------------------------
-    onBeforeBuild?: IBaseHooks;
-    onBeforeInit?: IBaseHooks;
-    onAfterInit?: IBaseHooks;
-    onBeforeBuildAssets?: IBaseHooks;
-    onAfterBuildAssets?: IBaseHooks;
-    onBeforeCompressSettings?: IBaseHooks;
-    onAfterCompressSettings?: IBaseHooks;
-    onAfterBuild?: IBaseHooks;
+    onBeforeBuild?: IInternalBaseHooks;
+    onBeforeInit?: IInternalBaseHooks;
+    onAfterInit?: IInternalBaseHooks;
+    onBeforeBuildAssets?: IInternalBaseHooks;
+    onAfterBuildAssets?: IInternalBaseHooks;
+    onBeforeCompressSettings?: IInternalBaseHooks;
+    onAfterCompressSettings?: IInternalBaseHooks;
+    onAfterBuild?: IInternalBaseHooks;
     // ------------------ 其他操作函数 ---------------------
     // 内置插件才有可能触发这个函数
     run?: (dest: string, options: IBuildTaskOption) => Promise<boolean>;
@@ -41,7 +50,7 @@ export interface IHook {
     compile?: (dest: string, options: IBuildTaskOption) => boolean;
 }
 
-export type IBaseHooks = (options: IInternalBuildOptions, result: InternalBuildResult, cache: BuilderAssetCache, ...args: any[]) => void;
+export type IInternalBaseHooks = (options: IInternalBuildOptions, result: InternalBuildResult, cache: BuilderAssetCache, ...args: any[]) => void;
 export interface IBuildTask {
     handle: (options: IInternalBuildOptions, result: InternalBuildResult, cache: BuilderAssetCache, settings?: ISettings) => {};
     title: string;
@@ -52,7 +61,11 @@ export interface IBuildHooksInfo {
     pkgNameOrder: string[];
     infos: Record<string, { path: string; internal: boolean }>;
 }
-export interface IInternalBuildPlugin extends IBuildPlugin {
+export interface IBuildAssetHandlerInfo {
+    pkgNameOrder: string[];
+    handles: {[pkgName: string]: Function};
+}
+export interface IInternalBuildPluginConfig extends IBuildPluginConfig {
     platformName?: string; // 平台名，可以指定为 i18n 写法, 只有官方构建插件的该字段有效
     hooks?: string; // 钩子函数的存储路径
     panel?: string; // 存储导出 vue 组件、button 配置的脚本路径
@@ -90,6 +103,7 @@ export interface IButtonConfigItem {
     label: string; // 按钮名称
     click?: (event: Event, options: IBuildTaskOption) => void; // 点击事件响应函数
     hookHandle?: string; // 点击后执行的方法，与 click 二选一
+    tooltip?: string; // 鼠标上移到按钮上的文本提示
     // 只有指定 hookHandle 配置的按钮，才可以影响进度条，构建将会自动为每个按钮创建一个构建内置任务，并提供对应的进度 log 更新等等。
     // attributes?: any; // 想要添加在按钮上的一些属性值（class, style, title)
 }
@@ -127,7 +141,7 @@ export interface IButtonConfig {
 
 export interface ICompInfo {
     custom?: any;
-    options?: any;
+    options?: IDisplayOptions;
     panelInfo?: PanelInfo;
     displayName?: string;
     wrapWithFold: boolean;

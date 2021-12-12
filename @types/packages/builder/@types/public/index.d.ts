@@ -2,6 +2,7 @@ import { ITransformOptions } from './options';
 
 export * from './build-result';
 export * from './build-plugin';
+export * from './texture-compress';
 export * from './options';
 
 interface IAppendRes {
@@ -95,6 +96,5 @@ export interface IBuild {
     BUNDLE_ZIP_NAME: string;
     projectTempDir: string;
     globalTempDir: string;
-    // 构建模板接口定义
-    buildTemplateDir: string;
+    buildTemplateDir: string; // 构建模板地址 build-templates
 }

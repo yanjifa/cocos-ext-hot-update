@@ -31,11 +31,12 @@ export interface ISettings {
     platform: string;
     renderPipeline: string;
     physics?: IPhysicsConfig;
+    exactFitScreen: boolean;
 
     bundleVers: Record<string, string>;
     subpackages: string[];
     remoteBundles: string[];
-    // server: string;
+    server: string;
     hasResourcesBundle: boolean;
     hasStartSceneBundle: boolean;
 
@@ -54,6 +55,7 @@ export interface ISettings {
     groupList?: any;
     // preview
     engineModules: string[];
+    customLayers: {name: string, bit: number}[];
 }
 
 // 物理配置
@@ -93,7 +95,6 @@ export interface IPackageInfo {
     uuids: UUID[];
 }
 
-// export type ISettingsMd5AssetsMap = Record<
 export interface ISettingsDesignResolution {
     width: number;
     height: number;
@@ -121,7 +122,7 @@ export interface IJsonPathInfo extends IAssetPathBase {
 
 export interface IBuildPaths {
     dir: string; // 构建资源输出地址（ assets 所在的目录，并不一定与构建目录对应）
-    settings: string; // settings.json输出地址
+    settings: string; // settings.json 输出地址
     systemJs?: string; // system.js 生成地址
     engineDir?: string; // 引擎生成地址
     polyfillsJs?: string; // polyfill.js 生成地址
