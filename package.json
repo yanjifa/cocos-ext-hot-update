@@ -4,7 +4,10 @@
     "package_version": 2,
     "version": "2.0.0",
     "author": "yanjifa",
+    "editor": ">=3.0.0",
     "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -w",
         "cocos-install": "./cocos-install.sh",
         "cocos-pack": "./cocos-pack.sh"
     },
