@@ -75,6 +75,37 @@ export async function onAfterMake(options: IBuildTaskOption, result: IBuildResul
 }
 
 /**
+ * av >= bv -> true
+ *
+ * @param av
+ * @param bv
+ * @returns
+ */
+ function versionCompare(av: string, bv: string) {
+    if (av.length !== bv.length) {
+        return av.length > bv.length;
+    }
+    const va = av.split(".");
+    const vb = bv.split(".");
+    let result = true;
+    for (let i = 0; i < va.length; i++) {
+        if (va[i] < vb[i]) {
+            result = false;
+            break;
+        }
+    }
+    return result;
+}
+
+function getAssetsPathName() {
+    if (versionCompare(Editor.App.version, "3.5.0")) {
+        return "data";
+    } else {
+        return "assets";
+    }
+}
+
+/**
  * 注入脚本
  * @param options
  */
@@ -85,7 +116,7 @@ function injectMainScript(options: IBuildTaskOption) {
     }
     const projectPath = Editor.Project.path;
     const buildPath = `${options.buildPath.replace('project:/', projectPath)}/${options.outputName}`;
-    const mainScriptPath = path.resolve(`${buildPath}/assets/main.js`);
+    const mainScriptPath = path.resolve(`${buildPath}/${getAssetsPathName()}/main.js`);
     let mainScript = fs.readFileSync(mainScriptPath).toString('utf-8');
 
     mainScript =
@@ -132,7 +163,7 @@ function generateEmptManifest(options: IBuildTaskOption) {
     }
     const projectPath = Editor.Project.path;
     const buildPath = `${options.buildPath.replace('project:/', projectPath)}/${options.outputName}`;
-    const assetsRootPath = path.resolve(`${buildPath}/assets`);
+    const assetsRootPath = path.resolve(`${buildPath}/${getAssetsPathName()}`);
     const projectManifestName = 'project.manifest';
     const destManifestPath = path.join(assetsRootPath, projectManifestName);
     fs.writeFileSync(destManifestPath, JSON.stringify({}));
@@ -157,7 +188,7 @@ function generateManifest(options: IBuildTaskOption) {
     const hotupdateVersion = `${packageOptions.version.trim()}.${buildNum.toFixed()}`;
     const projectPath = Editor.Project.path;
     const buildPath = `${options.buildPath.replace('project:/', projectPath)}/${options.outputName}`;
-    const assetsRootPath = path.resolve(`${buildPath}/assets`);
+    const assetsRootPath = path.resolve(`${buildPath}/${getAssetsPathName()}`);
     //
     const projectManifestName = 'project.manifest';
     const versionManifestName = 'version.manifest';
