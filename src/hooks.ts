@@ -50,7 +50,7 @@ export async function onBeforeBuildAssets(options: IBuildTaskOption, result: IBu
 }
 
 export async function onAfterBuildAssets(options: IBuildTaskOption, result: IBuildResult) {
-    generateEmptManifest(options);
+    generateEmptManifest(options, result);
 }
 
 export async function onBeforeCompressSettings(options: IBuildTaskOption, result: IBuildResult) {
@@ -62,8 +62,8 @@ export async function onAfterCompressSettings(options: IBuildTaskOption, result:
 }
 
 export async function onAfterBuild(options: IBuildTaskOption, result: IBuildResult) {
-    injectMainScript(options);
-    generateManifest(options);
+    injectMainScript(options, result);
+    generateManifest(options, result);
 }
 
 export async function onBeforeMake(options: IBuildTaskOption, result: IBuildResult) {
@@ -75,48 +75,15 @@ export async function onAfterMake(options: IBuildTaskOption, result: IBuildResul
 }
 
 /**
- * av >= bv -> true
- *
- * @param av
- * @param bv
- * @returns
- */
- function versionCompare(av: string, bv: string) {
-    if (av.length !== bv.length) {
-        return av.length > bv.length;
-    }
-    const va = av.split(".");
-    const vb = bv.split(".");
-    let result = true;
-    for (let i = 0; i < va.length; i++) {
-        if (va[i] < vb[i]) {
-            result = false;
-            break;
-        }
-    }
-    return result;
-}
-
-function getAssetsPathName() {
-    if (versionCompare(Editor.App.version, "3.5.0")) {
-        return "data";
-    } else {
-        return "assets";
-    }
-}
-
-/**
  * 注入脚本
  * @param options
  */
-function injectMainScript(options: IBuildTaskOption) {
+function injectMainScript(options: IBuildTaskOption, result: IBuildResult) {
     const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
     if (!packageOptions.hotUpdateEnable) {
         return;
     }
-    const projectPath = Editor.Project.path;
-    const buildPath = `${options.buildPath.replace('project:/', projectPath)}/${options.outputName}`;
-    const mainScriptPath = path.resolve(`${buildPath}/${getAssetsPathName()}/main.js`);
+    const mainScriptPath = path.resolve(`${result.paths.dir}/main.js`);
     let mainScript = fs.readFileSync(mainScriptPath).toString('utf-8');
 
     mainScript =
@@ -156,14 +123,12 @@ if (jsb.fileUtils.isDirectoryExist(tempPath) && !jsb.fileUtils.isFileExist(tempP
  *
  * @param options
  */
-function generateEmptManifest(options: IBuildTaskOption) {
+function generateEmptManifest(options: IBuildTaskOption, result: IBuildResult) {
     const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
     if (!packageOptions.hotUpdateEnable) {
         return;
     }
-    const projectPath = Editor.Project.path;
-    const buildPath = `${options.buildPath.replace('project:/', projectPath)}/${options.outputName}`;
-    const assetsRootPath = path.resolve(`${buildPath}/${getAssetsPathName()}`);
+    const assetsRootPath = result.paths.dir;
     const projectManifestName = 'project.manifest';
     const destManifestPath = path.join(assetsRootPath, projectManifestName);
     fs.writeFileSync(destManifestPath, JSON.stringify({}));
@@ -174,7 +139,7 @@ function generateEmptManifest(options: IBuildTaskOption) {
  * 生成热更文件
  * @param options
  */
-function generateManifest(options: IBuildTaskOption) {
+function generateManifest(options: IBuildTaskOption, result: IBuildResult) {
     const packageOptions: IPluginOptions = options.packages?.[PACKAGE_NAME];
     if (!packageOptions.hotUpdateEnable) {
         return;
@@ -187,8 +152,7 @@ function generateManifest(options: IBuildTaskOption) {
     const buildNum = !isNaN(Number(packageOptions.buildNum)) ? Number(packageOptions.buildNum) : 1;
     const hotupdateVersion = `${packageOptions.version.trim()}.${buildNum.toFixed()}`;
     const projectPath = Editor.Project.path;
-    const buildPath = `${options.buildPath.replace('project:/', projectPath)}/${options.outputName}`;
-    const assetsRootPath = path.resolve(`${buildPath}/${getAssetsPathName()}`);
+    const assetsRootPath = result.paths.dir;
     //
     const projectManifestName = 'project.manifest';
     const versionManifestName = 'version.manifest';
