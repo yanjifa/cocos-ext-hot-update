@@ -99,5 +99,3 @@ export const configs: BuildPlugin.Configs = {
     'android': buildPlugin,
     'windows': buildPlugin,
 };
-
-export const assetHandlers: BuildPlugin.AssetHandlers = './asset-handlers';
