@@ -2,7 +2,6 @@
 # 编译
 tsc
 # 删除
-rm -rf ./hot-update
 rm -rf ./hot-update.zip
 # 创建目录
 mkdir ./hot-update
@@ -11,5 +10,8 @@ cp -a ./package.json ./hot-update
 cp -a ./dist ./hot-update
 cp -a ./i18n ./hot-update
 # 压缩
-zip -r -m hot-update.zip ./hot-update
+cd ./hot-update
+zip -r -m ../hot-update.zip *
+cd ..
+rm -rf hot-update
 echo "pack done"
